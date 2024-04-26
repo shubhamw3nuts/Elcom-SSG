@@ -1,0 +1,583 @@
+
+import Head from 'next/head';
+import Image from 'next/image';
+import Link from 'next/link';
+import downerrow from "@/asset/images/downerrow.svg";
+import addsqusre from "@/asset/images/addsqusre.svg";
+import imageview from "@/asset/images/imageview.svg";
+import minusicon from "@/asset/images/minusicon.svg";
+import Search from '@/component/Svgs/Search';
+import proimg from '@/asset/images/proimg.png';
+import React, { useEffect, useRef, useState } from 'react';
+import plus from '@/asset/images/plus.svg';
+import whiteminus from '@/asset/images/whiteminus.svg';
+import whiteplus from '@/asset/images/whiteplus.svg';
+import ReactPaginate from 'react-paginate';
+import listimg from '@/asset/images/listimg.png';
+import filter from '@/asset/images/filter.svg';
+import Modal from 'react-bootstrap/Modal';
+import FiltermodalSec from '@/component/FiltermodalSec';
+import { decodeHTMLString } from '@/utils/utils';
+import axios from 'axios';
+import Loader from '@/component/Loader';
+
+
+const CheckBox = ({ id, categoryChangeHandler, category, selectedCategories }) => {
+    let isChecked = false;
+    if (selectedCategories.includes(category.id)) {
+        isChecked = true;
+    }
+    return (
+        <input type="checkbox" className='checkinput' id={`cb-${id}`} checked={isChecked} onChange={() => categoryChangeHandler(category, isChecked)} />
+    )
+}
+
+
+const Productfinder = ({ pageData }) => {
+    console.log("pageData :: ", pageData)
+    if (pageData) {
+        const [active, setActive] = useState("")
+        const [currentView, setCurrentView] = useState("image")
+        const [currentElement, setCurrentElement] = useState([]);
+        const [activeProductsIds, setActiveProductIds] = useState([]);
+        const [productCategories, setProductCategories] = useState(pageData?.category_array);
+        const [attributes, setAttributes] = useState(pageData?.attributes);
+        const [products, setProducts] = useState(pageData?.products);
+        const [totalProducts, setTotalProducts] = useState(pageData?.total_products);
+        const [totalPages, setTotalPages] = useState(pageData?.total_pages);
+        const [show, setShow] = useState(false);
+        const handleClose = () => setShow(false);
+        const handleShow = () => setShow(true);
+
+        const [selectedCategories, setSelectedCategories] = useState([]); //for store selected categories by user
+        const [selectedAttributes, setSelectedAttributes] = useState({}); //for store selected attributes
+
+        const [addClassForSubcategories, setAddClassForSubcategories] = useState([]);
+
+
+        const handleButtonClick = (iscls) => {
+            setActive(iscls != '' ? '' : 'active')
+        };
+
+        const changeViewHandler = (val) => {
+            setCurrentView(val)
+        };
+
+        const activeProduct = (value) => {
+            let arr = [...activeProductsIds];
+            if (arr.includes(value)) {
+                const index = arr.indexOf(value);
+                arr.splice(index, 1);
+                localStorage.setItem("selected_prodducts", arr)
+                setActiveProductIds(arr);
+            } else {
+                localStorage.setItem("selected_prodducts", [...activeProductsIds, value])
+                setActiveProductIds([...activeProductsIds, value]);
+            }
+        }
+
+        const filterClickHandler = (number, active) => {
+            let currentElementArr = [...currentElement];
+            if (currentElementArr.includes(number)) {
+                currentElementArr = currentElementArr.filter(ele => ele != number)
+            } else {
+                currentElementArr.push(number)
+            }
+            setCurrentElement(currentElementArr)
+        };
+
+        // To Display Category Parent To Child
+        const displayCategoryLevels = (category) => {
+            const { name, count, id, slug, children } = category;
+            const renderCategoryLevels = (categories, leval = 1) => {
+                if (categories.length > 0) {
+                    return (
+                        <>
+                            {categories.map((cat, index) => {
+                                return (
+                                    <div className={`innersubsec leval-${leval} ${selectedCategories.includes(cat.id) ? 'active===' : ''} ${addClassForSubcategories.includes(cat.id) ? 'active' : ''}`} key={index}>
+                                        <div className='innersubgrp'>
+                                            <div className='innerlist'>
+                                                <CheckBox id={cat.id} categoryChangeHandler={categoryChangeHandler} category={cat} selectedCategories={selectedCategories} />
+                                                <label htmlFor={`cb-${cat.id}`}>{cat.name} <span>({cat.count})</span></label>
+                                            </div>
+                                            {cat.children.length > 0 &&
+                                                <div className='plusminus' onClick={() => showSubCategories(cat.id)}>
+                                                    <div className='minusicon'>
+                                                        <Image src={minusicon} alt='minusicon' />
+                                                    </div>
+                                                    <div className='plusicon'>
+                                                        <Image src={plus} alt='plus' />
+                                                    </div>
+                                                </div>
+                                            }
+                                        </div>
+                                        {renderCategoryLevels(cat.children, leval + 1)}
+                                    </div>
+                                )
+                            })}
+                        </>
+                    );
+                }
+                return null;
+            };
+
+            return (
+                <>
+                    {renderCategoryLevels(children)}
+                </>
+            );
+        }
+
+        /* when user click on any category then get that 
+        category id and all sub categories id 
+        of that category for select that sub categories automatically */
+        const getAllCategoriesIds = (cat, getAllCat) => {
+            getAllCat.push(cat.id); // this is for add catetory it self to arr
+
+            // if category has children mease if category has child categories
+            if (cat?.children) {
+                cat.children.map((data, index) => {
+                    getAllCat.push(data.id);
+                    getAllCategoriesIds(data, getAllCat); // for infinite level to get child categories id
+                });
+            }
+            return getAllCat;
+        };
+
+        /* When User Check or Uncheck Category Checkbox */
+        const categoryChangeHandler = (cat, isChecked) => {
+            let getAllCat = [...selectedCategories];
+            // if (isChecked) {
+            //     getAllCat = getAllCat.filter(rm => rm != cat.id)
+            // } else {
+            //     getAllCat.push(cat.id)
+            // }
+            // setSelectedCategories(getAllCat);
+            if (isChecked) {
+                let removeThisCategories = [...new Set(getAllCategoriesIds(cat, []))];
+                removeThisCategories = getAllCat.filter(
+                    (el) => !removeThisCategories.includes(el)
+                );
+                setSelectedCategories(removeThisCategories);
+            } else {
+                let uniqueArray = [...new Set(getAllCategoriesIds(cat, getAllCat))];
+                setSelectedCategories(uniqueArray);
+            }
+        }
+
+        const handleAttributeChange = (category, attributeName, isChecked) => {
+            setSelectedAttributes((prevAttributes) => {
+                const updatedAttributes = { ...prevAttributes };
+                if (isChecked) {
+                    updatedAttributes[category] = [
+                        ...(updatedAttributes[category] || []),
+                        attributeName,
+                    ];
+                } else {
+                    updatedAttributes[category] = (updatedAttributes[category] || []).filter(
+                        (attr) => attr !== attributeName
+                    );
+
+                    // If all checkboxes for a category are unchecked, remove the category key from state
+                    if (updatedAttributes[category]?.length === 0) {
+                        delete updatedAttributes[category];
+                    }
+                }
+                return updatedAttributes;
+            });
+        };
+
+        const pageClickHandler = (page) => {
+            let selectedPage = page.selected + 1;
+            // const formData = new FormData();
+            // formData.append("selectedPage", 5);
+            const url = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/productFinder`;
+            axios({
+                method: 'post',
+                url: url,
+                data: JSON.stringify({ "selectedPage": selectedPage }),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            }).then(response => {
+                const result = response.data;
+                if (result.products) {
+                    setProducts(result.products)
+                }
+                console.log("RESPONSEs", result)
+            }).catch(error => { console.error('Error:', error); });
+        }
+
+
+        const showSubCategories = (catId) => {
+            let arr = [...addClassForSubcategories];
+            if (arr.includes(catId)) {
+                arr = arr.filter(el => el != catId);
+            } else {
+                arr.push(catId)
+            }
+            setAddClassForSubcategories(arr);
+        }
+
+        return (
+            <>
+                <Head>
+                    <title>Productfinder | Elcom</title>
+                </Head>
+                <div className='productfinder'>
+                    <div className="commonselector">
+                        <div className="container">
+                            <div className="commonselect">
+                                <div className="titleheader">
+                                    <div className="row">
+                                        <div className="col-lg-3">
+                                            <div className="filterheading">
+                                                <h6>Filter</h6>
+                                                {/* <Loader /> */}
+                                            </div>
+                                        </div>
+                                        <div className="col-lg-4">
+                                            <div className="shortsec">
+                                                <div className="recentsec">
+                                                    <Link href={"#"}>
+                                                        <span>Sort by: Most recent</span>
+                                                        <i><Image src={downerrow} alt="downerrow" /></i>
+                                                    </Link>
+                                                </div>
+                                                <div className="filterimg">
+                                                    <Link href={"javascript:void(0)"} onClick={() => changeViewHandler("list")}><Image src={addsqusre} alt="addsqusre" /></Link>
+                                                    <Link href={"javascript:void(0)"} onClick={() => changeViewHandler("image")}><Image src={imageview} alt="imageview" /></Link>
+                                                </div>
+                                                <div className='mobilefilter'>
+                                                    <Modal show={show} onHide={handleClose} className={"filtermodel"}>
+                                                        <FiltermodalSec change={handleClose} />
+                                                    </Modal>
+                                                    <div className='imgfilter'>
+                                                        <Link href={`javascript:void(0)`} onClick={handleShow}><Image src={filter} alt='filter' /></Link>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div className='col-lg-5'>
+                                            <div className='btnbox'>
+                                                {/* <Link className='elcom-btn primary-black-btn' href={"#"}>request a sample</Link> */}
+                                                <Link className='elcom-btn primary-btn' href={"/request-quote"}>request a quote</Link>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className='productfilter'>
+                        <div className='container'>
+                            <div className='filterwrap'>
+                                <div className='row'>
+                                    <div className='col-lg-3'>
+                                        <div className='filterlist'>
+                                            <div className='filterlistsec' >
+                                                {productCategories &&
+                                                    <div className={`filtermain ${currentElement.includes(1) ? 'active' : ''}`} >
+                                                        <div className='mainttllist' >
+                                                            <Link href={"javascript:void(0)"} onClick={() => filterClickHandler(1)}>
+                                                                <span>Product Categories</span>
+                                                                <div className='plusminus'>
+                                                                    <div className='minusicon'>
+                                                                        <Image src={minusicon} alt='minusicon' />
+                                                                    </div>
+                                                                    <div className='plusicon'>
+                                                                        <Image src={plus} alt='plus' />
+                                                                    </div>
+                                                                </div>
+                                                            </Link>
+                                                        </div>
+                                                        <div className={`filtercat`}>
+                                                            <div className='filtercatlist'>
+                                                                {productCategories.map((category, index) => {
+                                                                    const { name, count, id, children, parent_id } = category;
+                                                                    return (
+                                                                        <div className={`categoryWrap ${selectedCategories.includes(id) ? 'active===' : ''} ${addClassForSubcategories.includes(id) ? 'active' : ''}`} key={index}>
+                                                                            <div className="filtersubgrp">
+                                                                                <div className='filtersublist'>
+                                                                                    <CheckBox id={id} categoryChangeHandler={categoryChangeHandler} category={category} selectedCategories={selectedCategories} />
+                                                                                    <label htmlFor={`cb-${id}`} >{decodeHTMLString(name)} <span>({count})</span></label>
+                                                                                </div>
+                                                                                {category.children.length > 0 &&
+                                                                                    <div className='plusminus' onClick={() => showSubCategories(id)}>
+                                                                                        <div className='minusicon'>
+                                                                                            <Image src={minusicon} alt='minusicon' />
+                                                                                        </div>
+                                                                                        <div className='plusicon'>
+                                                                                            <Image src={plus} alt='plus' />
+                                                                                        </div>
+                                                                                    </div>
+                                                                                }
+                                                                            </div>
+                                                                            {displayCategoryLevels(category)}
+                                                                        </div>
+                                                                    )
+                                                                })}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                }
+                                                {attributes &&
+                                                    attributes.map((attribute, index) => {
+                                                        let indexForActive = index + 2;
+                                                        return (
+                                                            <div className={`filtermain ${currentElement.includes(indexForActive) ? 'active' : ''}`} key={index}>
+                                                                <div className='mainttllist'>
+                                                                    <Link href={"javascript:void(0)"} onClick={() => filterClickHandler(indexForActive)}>
+                                                                        <span>{attribute[0]}</span>
+                                                                        <div className='plusminus'>
+                                                                            <div className='minusicon'>
+                                                                                <Image src={minusicon} alt='minusicon' />
+                                                                            </div>
+                                                                            <div className='plusicon'>
+                                                                                <Image src={plus} alt='plus' />
+                                                                            </div>
+                                                                        </div>
+                                                                    </Link>
+                                                                </div>
+                                                                {attribute[1].length > 0 &&
+                                                                    <div className='filtercat'>
+                                                                        <div className='filtercatlist'>
+                                                                            {attribute[1].map((att, index) => {
+                                                                                return (
+                                                                                    <div className='filtersublist' key={index}>
+                                                                                        <input
+                                                                                            type="checkbox"
+                                                                                            className='checkinput'
+                                                                                            id={`cb_${index}_${att.term_id}`}
+                                                                                            onChange={(e) => handleAttributeChange(att.taxonomy, att.name, e.target.checked)}
+                                                                                        />
+                                                                                        <label htmlFor={`cb_${index}_${att.term_id}`}>{decodeHTMLString(att.name)} <span>({att.count})</span></label>
+                                                                                    </div>
+                                                                                )
+                                                                            })}
+                                                                        </div>
+                                                                    </div>
+                                                                }
+                                                            </div>
+                                                        )
+                                                    })
+
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className='col-lg-9'>
+                                        <div className='imageviewsec'>
+                                            <div className='row'>
+                                                <div className='col-lg-6'>
+                                                    <div className='proquantity'>
+                                                        <h6><span>{totalProducts} </span>products</h6>
+                                                    </div>
+                                                </div>
+                                                <div className='col-lg-6'>
+                                                    <div className='serchsec'>
+                                                        <div className='productserchbox'>
+                                                            <input type="text" placeholder='Search any product here...' />
+                                                            <button>
+                                                                <Search />
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className={`imagesec ${currentView == 'image' ? 'active' : ''}`}>
+                                                {/* {JSON.stringify(selectedAttributes)} */}
+                                                <div className='row'>
+                                                    {products.map((product, index) => {
+                                                        return (
+                                                            <div className='col-lg-3 col-6' key={product.id}>
+                                                                <Link href={"javascript:void(0)"} onClick={() => activeProduct(product.id)} className={activeProductsIds.includes(product.id) ? 'active' : ''}>
+                                                                    <div className='proimgdtl'>
+                                                                        <div className='fullimgview'>
+                                                                            <Image src={proimg} alt='proimg' />
+                                                                            {/* <div className='hovertext'>
+                                                                                <Link href={"#"}>view details</Link>
+                                                                                <Link href={"#"}>select</Link>
+                                                                            </div> */}
+                                                                            <div className='pmgroup'>
+                                                                                <div className='plusminus'>
+                                                                                    <input type="checkbox" />
+                                                                                    <label htmlFor="a">
+                                                                                        <span></span>
+                                                                                        <span></span>
+                                                                                    </label>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                        <div className='imgdtl'>
+                                                                            <span>{product.title} <br /> (Non-approved series)  </span>
+                                                                        </div>
+                                                                    </div>
+                                                                </Link>
+                                                            </div>
+                                                        )
+                                                    })}
+                                                </div>
+                                            </div>
+                                            <div className={`listviewsec ${currentView == 'list' ? 'active' : ''}`}>
+                                                <div className='row'>
+                                                    <div className='col-lg-1'>
+                                                        <div className='imgsec'>
+                                                            <span>Image</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className='col-lg-2'>
+                                                        <div className='modelcodesec'>
+                                                            <span>Model code</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className='col-lg-3'>
+                                                        <div className='typesec'>
+                                                            <span>Type</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className='col-lg-3'>
+                                                        <div className='outletsec'>
+                                                            <span>Total Outlets</span>
+                                                        </div>
+                                                    </div>
+                                                    <div className='col-lg-2'>
+                                                        <div className='voltagesec'>
+                                                            <span>Voltage (V)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='listviewsubcat'>
+                                                    <div className='row'>
+                                                        <div className='col-lg-1'>
+                                                            <div className='listimgsec'>
+                                                                <Link href={'#'}>
+                                                                    <Image src={listimg} alt='listimg' />
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-2'>
+                                                            <div className='modellist'>
+                                                                <Link href={'#'}>
+                                                                    <span>EIS-T624D-EE303V</span>
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-3'>
+                                                            <div className='typelist'>
+                                                                <span>Aggregate Metering Individual Switching (AMIS)</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-3'>
+                                                            <div className='outletlist'>
+                                                                <span>30</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-3'>
+                                                            <div className='voltagelist'>
+                                                                <span>230</span>
+                                                                {/* <div className='plusminus'>
+                                                                <div className='minusicon'>
+                                                                    <Image src={whiteminus} alt='whiteminus'/>
+                                                                </div>
+                                                                <div className='plusicon'>
+                                                                    <Image src={whiteplus} alt='whiteplus'/>
+                                                                </div>
+                                                            </div> */}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div className='listviewsubcat'>
+                                                    <div className='row'>
+                                                        <div className='col-lg-1'>
+                                                            <div className='listimgsec'>
+                                                                <Link href={'#'}>
+                                                                    <Image src={listimg} alt='listimg' />
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-2'>
+                                                            <div className='modellist'>
+                                                                <Link href={'#'}>
+                                                                    <span>EIS-T624D-EE303V</span>
+                                                                </Link>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-3'>
+                                                            <div className='typelist'>
+                                                                <span>Aggregate Metering Individual Switching (AMIS)</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-3'>
+                                                            <div className='outletlist'>
+                                                                <span>30</span>
+                                                            </div>
+                                                        </div>
+                                                        <div className='col-lg-3'>
+                                                            <div className='voltagelist'>
+                                                                <span>230</span>
+                                                                {/* <div className='plusminus'>
+                                                                <div className='minusicon'>
+                                                                    <Image src={whiteminus} alt='whiteminus'/>
+                                                                </div>
+                                                                <div className='plusicon'>
+                                                                    <Image src={whiteplus} alt='whiteplus'/>
+                                                                </div>
+                                                            </div> */}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div className='pagination'>
+                                            <ReactPaginate
+                                                breakLabel="..."
+                                                nextLabel=">"
+                                                onPageChange={(e) => pageClickHandler(e)}
+                                                pageRangeDisplayed={3}
+                                                pageCount={totalPages}
+                                                previousLabel="<"
+                                                renderOnZeroPageCount={null}
+                                                forcePage={0}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div >
+                </div >
+
+            </>
+        )
+    }
+    return '404'
+}
+
+export default Productfinder;
+
+export async function getServerSideProps(context) {
+
+    let res = '';
+    const url = `${process.env.NEXT_PUBLIC_WORDPRESS_SITE_URL}/wp-json/wp/v2/productFinder`;
+    const response = await fetch(url, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ "slug": "sfsfsdf" })
+    });
+
+    const pageData = await response.json();
+
+    return {
+        props: {
+            headerClass: 'header-v2',
+            pageData: pageData
+        }
+    }
+}

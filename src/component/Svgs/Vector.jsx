@@ -1,0 +1,9 @@
+const Vector = () => {
+    return (
+        <svg width="76" height="84" viewBox="0 0 76 84" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M54.4444 37.9V21.5M75 1H1V66.6H21.5556V83L38 66.6H58.5556L75 50.2V1ZM33.8889 37.9V21.5V37.9Z" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    )
+}
+
+export default Vector;

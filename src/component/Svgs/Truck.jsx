@@ -1,0 +1,12 @@
+const Truck = () => {
+    return (
+        <svg width="101" height="104" viewBox="0 0 101 104" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M77.493 91C83.2268 91 87.875 86.1498 87.875 80.1667C87.875 74.1836 83.2268 69.3333 77.493 69.3333C71.7592 69.3333 67.1111 74.1836 67.1111 80.1667C67.1111 86.1498 71.7592 91 77.493 91Z" stroke="#343434" stroke-width="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M23.5069 91C29.2407 91 33.8889 86.1498 33.8889 80.1667C33.8889 74.1836 29.2407 69.3333 23.5069 69.3333C17.7731 69.3333 13.125 74.1836 13.125 80.1667C13.125 86.1498 17.7731 91 23.5069 91Z" stroke="#343434" stroke-width="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M67.1111 34.6667H83.7222L96.1805 47.6667V69.3333H67.1111V34.6667Z" stroke="#343434" stroke-width="2" strokeLinecap="round" strokeLinejoin="round"/>
+            <path d="M67.1111 13H4.8194V69.3333H67.1111V13Z" stroke="currentColor" stroke-width="2" strokeLinecap="round" strokeLinejoin="round"/>
+        </svg>
+    )
+}
+
+export default Truck;

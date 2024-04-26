@@ -1,0 +1,310 @@
+:root {
+    --elcom-blue: #005ABB;
+    --elcom-white: #FFFFFF;
+    --elcom-dark: #011B4D;
+    --elcom-black: #101010;
+    --elcom-green: #5BDE84;
+    --elcom-extra-dark: #343434;
+    --elcom-dark-gray: #7B7B7B;
+    --elcom-grey: #A1A1A1;
+    --elcom-light-gray: #D6D6D6;
+    --elcom-white-20: rgba(255, 255, 255, 0.30);
+    --elcom-bg-white: #f2f2f2;
+    --elcom-bg-black: #000000;
+    --elcom-bg-blue: #041E49;
+    --elcom-bg-dark-gray: #D9D9D9;
+}
+
+.pagination li.selected {}
+
+.pagination li.selected a {
+    color: var(--elcom-bg-white) !important;
+}
+
+.pagination li.next.disabled {
+    display: none;
+}
+
+.puwrap .small-text {
+    display: inline-flex;
+    width: auto;
+}
+
+/* ========================= PLEASE REMOVE THIS ============================================= */
+/* @media (max-width: 991px) {
+    .headerBar .navigationBar .navWrapper {
+        display: none;
+    }
+} */
+
+/* .buildbriefdetail {
+    padding: 0 0 80px;
+} */
+
+/* .buildpduwrap {
+    padding: 99px 0 80px;
+} */
+
+/* .buildwrapper {
+    border-top: 1px solid var(--elcom-grey);
+}
+
+.builddetail {
+    border-bottom: 1px solid var(--elcom-grey);
+    padding: 40px 0;
+} */
+
+/* .buildfrom .row {
+    row-gap: 40px;
+} */
+
+/* .buildfrom span {
+    padding-left: 18px;
+} */
+
+/* .buildcontact {
+    padding: 80px 40px;
+    background-color: #E5EFFB;
+}
+
+.buildcontact .btnbox {
+    justify-content: center;
+    padding: 40px 0 0;
+}
+
+.buildcontact .contactInner input {
+    background-color: transparent;
+}
+
+.buildmain .row+.row {
+    margin-top: 40px;
+}
+
+.buildfrom .blankform input {
+    width: 100%;
+    padding: 12px 10px;
+}
+
+.buildtext {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.buildfrom .blankform input:focus-visible {
+    outline: none;
+}
+
+.buildwrapper .btnbox {
+    justify-content: center;
+}
+
+.buildfrom span {
+    font-family: 'Inter';
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.2px;
+}
+
+.buildtext input {
+    width: 100%;
+    padding: 12px 10px;
+    margin-top: 15px;
+}
+
+.buildtext input:focus-visible {
+    outline: none;
+}
+
+.buildcontact .checkbox_wrap label {
+    padding-top: 56px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.checkbox_wrap label span {
+    color: var(--elcom-black);
+    font-family: 'Inter';
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 24px;
+    letter-spacing: -0.2px;
+}
+
+.checkbox_wrap label input {
+    background-color: #E5EFFB;
+}
+
+.buildcontact .contactInner {
+    width: 100%;
+    max-width: 100%;
+}
+
+.buildcontact .contactInner input {
+    max-width: 100%;
+} */
+
+/* ========================= PLEASE REMOVE THIS ============================================= */
+
+/* .insightwrap .nav-tabs .nav-item button {
+    text-transform: uppercase;
+} */
+
+.latestBsec .lbgrp .lbleft .lblabel .small-text {
+    color: #FFF;
+    font-weight: 400;
+    background-color: var(--elcom-blue);
+    /* width: 226px; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 4px 8px;
+    letter-spacing: 0;
+    display: inline-flex;
+}
+
+.contactForm.thankyou .btnbox {
+    justify-content: center;
+    padding-top: 40px;
+}
+
+.innerlist {
+    padding: 8px 0;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.innerlist input {
+    width: 16px;
+    height: 16px;
+}
+
+.innerlist label {
+    color: var(--elcom-black);
+    font-family: 'Inter';
+    font-size: 12px;
+    font-weight: 400;
+    line-height: 16px;
+}
+
+
+.lds-roller {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+}
+
+.lds-roller div {
+    animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 40px 40px;
+}
+
+.lds-roller div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: #005ABB;
+    margin: -4px 0 0 -4px;
+}
+
+.lds-roller div:nth-child(1) {
+    animation-delay: -0.036s;
+}
+
+.lds-roller div:nth-child(1):after {
+    top: 63px;
+    left: 63px;
+}
+
+.lds-roller div:nth-child(2) {
+    animation-delay: -0.072s;
+}
+
+.lds-roller div:nth-child(2):after {
+    top: 68px;
+    left: 56px;
+}
+
+.lds-roller div:nth-child(3) {
+    animation-delay: -0.108s;
+}
+
+.lds-roller div:nth-child(3):after {
+    top: 71px;
+    left: 48px;
+}
+
+.lds-roller div:nth-child(4) {
+    animation-delay: -0.144s;
+}
+
+.lds-roller div:nth-child(4):after {
+    top: 72px;
+    left: 40px;
+}
+
+.lds-roller div:nth-child(5) {
+    animation-delay: -0.18s;
+}
+
+.lds-roller div:nth-child(5):after {
+    top: 71px;
+    left: 32px;
+}
+
+.lds-roller div:nth-child(6) {
+    animation-delay: -0.216s;
+}
+
+.lds-roller div:nth-child(6):after {
+    top: 68px;
+    left: 24px;
+}
+
+.lds-roller div:nth-child(7) {
+    animation-delay: -0.252s;
+}
+
+.lds-roller div:nth-child(7):after {
+    top: 63px;
+    left: 17px;
+}
+
+.lds-roller div:nth-child(8) {
+    animation-delay: -0.288s;
+}
+
+.lds-roller div:nth-child(8):after {
+    top: 56px;
+    left: 12px;
+}
+
+@keyframes lds-roller {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+@media (min-width: 992px) and (max-width: 1799px) {
+    .insightwrap .tab-content .row .col-xl-4:last-child {
+        display: none !important;
+    }
+}
+.smallmenu {}
+.smallmenu ul {
+    display: flex;
+    flex-direction: column;
+}
+
