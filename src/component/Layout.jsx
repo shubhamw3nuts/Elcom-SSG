@@ -14,12 +14,15 @@ const Layout = ({ children, headerClass,themeSettings }) => {
 
     let theme_settings = themeSettings?.themeGeneralSettings?.theme_settings;
     let HeaderMenu = themeSettings?.menuItems?.edges;
-  
+    // let  theme_settings = ''
+    // let HeaderMenu = ''
     return (
         <>
             <AppContext.Provider value={{ theme_settings, HeaderMenu }}>
                 <Header headerClass={headerClass} />
+                {/* <h1>Header</h1> */}
                 {children}
+                {/* <h1>Footer</h1> */}
                 <Footer/>
             </AppContext.Provider>
         </>

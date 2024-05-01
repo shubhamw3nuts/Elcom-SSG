@@ -12,7 +12,6 @@ gsap.registerPlugin(ScrollTrigger);
 const IntroductionSec = ({sectionHeading,heading,description,image,buttonOne,buttonTwo}) => {
 
     useEffect( () => {
-        console.log('DFDSFSDFSD')
         gsap.set(".fadeInUp", {y: "30%", opacity: 0,});
          ScrollTrigger.batch(".fadeInUp", {
            onEnter: batch => gsap.to(batch, {  opacity: 1, duration: .8, delay:0.3, stagger: 0.2, y:0}),

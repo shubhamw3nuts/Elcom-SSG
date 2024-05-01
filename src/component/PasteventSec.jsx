@@ -31,7 +31,6 @@ const PasteventSec = ({ eventsData }) => {
 
     useEffect(() => {
         if (!loading && data) {
-            console.log("data",data)
             setEventsData(data?.eventsPast)
             setClicked(false);
         }

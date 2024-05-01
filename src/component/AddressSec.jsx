@@ -16,8 +16,6 @@ const AddressSec = ({ data }) => {
         contactAddressHeading, contactAddressInfo, contactEmailHeading, contactEmailInfo, contactFactoryHeading, contactHeading, contactMapIframe, contactOfficeHeading, contactPhoneHeading, contactPhoneOneInfo, contactPhoneTwoInfo, contactSectionHeading, emptyFieldErrorMessage, enquiryFormSubmitButtonText, enquiryHeading, enquirySectionHeading, factoryAddressHeading, factoryAddressInfo, factoryPhoneHeading, factoryPhoneOneInfo, factoryPhoneTwoInfo, thankYouMessage, formResetButtonText
     } = data;
 
-    console.log("")
-
     let hasErrors = false;
     let errors = {}
 
@@ -108,7 +106,6 @@ const AddressSec = ({ data }) => {
                 },
             })
                 .then(response => {
-                    console.log("Res : ", response);
                     if (response.data.email_sent) {
                         setIsMailSent(true);
                         setFormSubmitError('');

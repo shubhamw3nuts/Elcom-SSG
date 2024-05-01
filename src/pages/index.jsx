@@ -157,6 +157,6 @@ export async function getStaticProps({ req, res }) {
       certifications: data?.certifications?.nodes,
       // slugs:slugs
     },
-    revalidate: 20, // In seconds
+    revalidate: false, // In seconds
   }
 }

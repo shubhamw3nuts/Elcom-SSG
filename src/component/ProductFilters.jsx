@@ -333,7 +333,6 @@ const ProductFilters = ({ pageData, fromPDUPage, slug }) => {
                 signal,
             }).then(response => {
                 const result = response.data;
-                console.log("RESULT : ", result)
                 setAttributes(result.attributes);
                 setProductCategories(result.category_array);
                 setCurrentElement(currentElement.filter(ele => selectedAttributes.hasOwnProperty(ele) || ele == 1 && (selectedCategories.length > 0 ? true :false) ))

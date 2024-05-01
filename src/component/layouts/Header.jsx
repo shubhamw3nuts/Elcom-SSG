@@ -13,7 +13,6 @@ import { gsap } from "gsap";
 gsap.registerPlugin(ScrollTrigger);
 
 const Header = ({ headerClass, loader }) => {
-
   useEffect(() => {
     gsap.set(".fadeInUp", { y: "30%", opacity: 0, });
     ScrollTrigger.batch(".fadeInUp", {

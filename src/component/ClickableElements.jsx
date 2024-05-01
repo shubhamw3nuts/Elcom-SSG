@@ -9,7 +9,6 @@ const ClickableElements = ({ targetSection , textProps }) => {
     // Scroll to the specified section when the element is clicked
     if (targetSection) {
       const element = document.getElementById(targetSection);
-      console.log('Header height:', headerHeight);
       // const offset = element.getBoundingClientRect().top + window.scrollY - headerHeight;
       // const offset = (element.getBoundingClientRect().top + headerHeight);
       const offset = (element.offsetTop - headerHeight - getintouch);

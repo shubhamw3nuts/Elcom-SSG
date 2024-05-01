@@ -214,7 +214,7 @@ function Page({ templateName, pageData, params, departmentCategories, locationCa
 }
 export default Page
 
-
+/*
 export async function getStaticPaths() {
 
     const { data: slugs } = await client.query({
@@ -440,3 +440,4 @@ export async function getStaticProps(context) {
         revalidate: 20,
     }
 }
+*/

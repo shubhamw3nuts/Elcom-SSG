@@ -907,7 +907,7 @@ export const GET_PAST_EVENTS = gql`
 `
 export const GET_ALL_PAGES_SLUG = gql`
   query GET_ALL_PAGES_SLUG {
-    pages(first: 100, where: {notIn: ["5","36","3619"]}) {
+    pages(first: 100, where: {notIn: ["5","36","3619"],status:PUBLISH}) {
       nodes {
         slug
       }
@@ -916,7 +916,7 @@ export const GET_ALL_PAGES_SLUG = gql`
 `
 export const GET_ALL_EVENTS_SLUG = gql`
   query GET_ALL_EVENTS_SLUG {
-    events(first: 100) {
+    events(first: 100,where: {status:PUBLISH}) {
       nodes {
         slug
       }
@@ -926,9 +926,50 @@ export const GET_ALL_EVENTS_SLUG = gql`
 
 export const GET_ALL_NEWS_SLUG = gql`
   query GET_ALL_NEWS_SLUG {
-    allNews(first: 100) {
+    allNews(first: 100,where: {status:PUBLISH}) {
       nodes {
         slug
+      }
+    }
+  }
+`
+// export const GET_ALL_PRODUCT_CATEGORY_SLUG = gql`
+//   query GET_ALL_PRODUCT_CATEGORY_SLUG {
+//     productCategories(first: 100, where: {termTaxonomId: ["16"]}) {
+//       nodes {
+//         uri
+//       }
+//     }
+//   }
+// `
+export const GET_ALL_PRODUCT_CATEGORY_SLUG = gql`
+  query GET_ALL_PRODUCT_CATEGORY_SLUG {
+    productCategories(first: 100) {
+      nodes {
+        uri
+      }
+    }
+  }
+`
+
+// export const GET_ALL_PRODUCT_SLUG = gql`
+//   query GET_ALL_PRODUCT_SLUG {
+//     products(first: 600, where: {status: "PUBLISH", include: 5261}) {
+//       nodes {
+//         ... on SimpleProduct {
+//           uri
+//         }
+//       }
+//     }
+//   }
+// `
+export const GET_ALL_PRODUCT_SLUG = gql`
+  query GET_ALL_PRODUCT_SLUG {
+    products(first: 10, where: {status: "PUBLISH"}) {
+      nodes {
+        ... on SimpleProduct {
+          uri
+        }
       }
     }
   }

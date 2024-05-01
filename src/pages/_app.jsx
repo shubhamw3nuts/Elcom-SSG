@@ -15,11 +15,12 @@ import Layout from '@/component/Layout';
 import Script from 'next/script';
 import { useEffect } from 'react';
 
-export default function App({ Component, pageProps, themeSettings }) {
+export default function App({ Component, pageProps,themeSettings }) {
   let headerClass = pageProps?.headerClass; // to use in header component
   if (!headerClass) {
     headerClass = '';
   }
+  // let themeSettings = {};
   return (
     <ApolloProvider client={client}>
       <NextNProgress height={6} color='#005ABB' />
@@ -60,5 +61,6 @@ App.getInitialProps = async () => {
     query: GET_THEME_SETTINGS,
     // fetchPolicy: 'cache-first'
   });
-  return { themeSettings }
+  let theme = await themeSettings;
+  return { themeSettings : theme }
 }

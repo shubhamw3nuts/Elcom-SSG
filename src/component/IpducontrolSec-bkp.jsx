@@ -23,7 +23,6 @@ const IpducontrolSec = ({ info }) => {
         let elementCenter = elementRect.top + elementRect.height / 2;
         let scrollThreshold = viewportHeight * -0.10; // Set to -10% of viewport height
     
-        console.log('isElementScrolledByNegative50Percent', elementRect, viewportHeight, elementCenter);
     
         return elementCenter >= scrollThreshold && elementCenter <= scrollThreshold + elementRect.height;
     }

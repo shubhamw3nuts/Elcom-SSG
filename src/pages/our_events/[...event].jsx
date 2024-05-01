@@ -12,7 +12,8 @@ import { ScrollTrigger } from "gsap/dist/ScrollTrigger";
 gsap.registerPlugin(ScrollTrigger);
 
 
-const EventDetail = ({ eventData }) => {
+const EventDetail = ({ eventData,params }) => {
+    // console.log("params events: ",params)
     const [addClass, setAddClass] = useState(false);
     const [inViewRef, inView] = useInView({
         triggerOnce: true,
@@ -167,6 +168,7 @@ export default EventDetail
 //     }
 // }
 
+/*
 export async function getStaticPaths() {
     const { data: slugs } = await client.query({
         query: GET_ALL_EVENTS_SLUG,
@@ -181,7 +183,6 @@ export async function getStaticPaths() {
 export async function getStaticProps(context) {
     const { params } = context;
     const slug = params.event[0];
-
     const { data: eventDetailData, loading, networkStatus } = await client.query({
         query: GET_EVENT_DETAIL_PAGE,
         variables: { id: slug },
@@ -191,7 +192,9 @@ export async function getStaticProps(context) {
         props: {
             eventData: eventDetailData,
             headerClass: 'header-v2',
+            params:params
         },
         revalidate: 20,
     }
 }
+*/
