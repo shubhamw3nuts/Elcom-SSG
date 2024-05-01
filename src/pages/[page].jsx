@@ -436,6 +436,6 @@ export async function getStaticProps(context) {
             pastEventsData,
             seodata
         },
-        revalidate: 20,
+        revalidate: false,
     }
 }
