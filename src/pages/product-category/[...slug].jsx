@@ -100,7 +100,6 @@ const CategoryDetail = ({ categoryDetails, productData,slug,relatedblogs }) => {
 
 export default CategoryDetail
 
-/*
 export async function getStaticPaths() {
     const { data: slugs } = await client.query({
         query: GET_ALL_PRODUCT_CATEGORY_SLUG,
@@ -175,4 +174,3 @@ export async function getStaticProps(context) {
         revalidate: 20,
     }
 }
-*/

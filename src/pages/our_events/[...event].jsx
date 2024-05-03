@@ -168,7 +168,6 @@ export default EventDetail
 //     }
 // }
 
-/*
 export async function getStaticPaths() {
     const { data: slugs } = await client.query({
         query: GET_ALL_EVENTS_SLUG,
@@ -197,4 +196,3 @@ export async function getStaticProps(context) {
         revalidate: 20,
     }
 }
-*/

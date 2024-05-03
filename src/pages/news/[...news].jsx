@@ -100,7 +100,6 @@ export default NewsDetailPageMain;
 //     }
 // }
 
-/*
 export async function getStaticPaths() {
     const { data: slugs } = await client.query({
         query: GET_ALL_NEWS_SLUG,
@@ -130,4 +129,3 @@ export async function getStaticProps(context) {
         revalidate: 20,
     }
 }
-*/
